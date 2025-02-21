@@ -8,6 +8,10 @@ use hidapi::{HidApi, HidDevice};
 use indicatif::{ProgressBar, ProgressStyle};
 use tap::Pipe;
 
+// 0x9a63 = 24MD4KL
+// 0x9a70 = 27MD5KL
+// 0x9a40 = 27MD5KA
+
 const VENDOR_ID: u16 = 0x43e;
 const PRODUCT_ID: u16 = 0x9a70;
 
@@ -65,7 +69,7 @@ fn test_get_brightness() {
 }
 
 fn set_brightness(uf: &HidDevice, val: u16) {
-    if !(MIN_BRIGHTNESS..=MAX_BRIGHTNESS).contains(&val) {
+    if !STEPS.contains(&val) {
         return;
     }
 
