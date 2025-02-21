@@ -4,3 +4,4 @@ Up : increase 5%
 Down : decrease 5%
 Right : increase 1%
 Left : decrease 1%
+q : exit program
