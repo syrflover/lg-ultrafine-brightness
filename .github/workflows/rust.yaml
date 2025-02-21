@@ -1,0 +1,20 @@
+name: Rust
+
+on:
+    push:
+        tags: ["*"]
+
+env:
+    CARGO_TERM_COLOR: always
+
+jobs:
+    release:
+        runs-on: windows-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Build
+              run: cargo build --verbose --release
+            - uses: actions/checkout@v4
+            - uses: ncipollo/release-action@v1
+              with:
+                  artifacts: "./target/release/ufbr.exe"
