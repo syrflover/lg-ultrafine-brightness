@@ -15,11 +15,6 @@ use tap::Pipe;
 const VENDOR_ID: u16 = 0x43e;
 const PRODUCT_ID: u16 = 0x9a70;
 
-const MAX_BRIGHTNESS: u16 = 0xd2f0;
-const MIN_BRIGHTNESS: u16 = 0x0190;
-
-const STEP: u16 = 540;
-
 /// 1%
 const STEPS: [u16; 100] = [
     540, 1080, 1620, 2160, 2700, 3240, 3780, 4320, 4860, 5400, 5940, 6480, 7020, 7560, 8100, 8640,
@@ -31,6 +26,9 @@ const STEPS: [u16; 100] = [
     44820, 45360, 45900, 46440, 46980, 47520, 48060, 48600, 49140, 49680, 50220, 50760, 51300,
     51840, 52380, 52920, 53460, 54000,
 ];
+const MAX_BRIGHTNESS: u16 = STEPS[99];
+const MIN_BRIGHTNESS: u16 = STEPS[0];
+const STEP: u16 = STEPS[0];
 
 fn get_brightness(uf: &HidDevice) -> u16 {
     let mut data = [0; 7];
@@ -60,7 +58,7 @@ fn find_nearest(x: u16) -> u16 {
 #[test]
 fn test_get_brightness() {
     let hidapi = HidApi::new().unwrap();
-    let uf = find_oldest_ultrafine_5k(&hidapi).unwrap();
+    let uf = find_ultrafine_27MD5KL(&hidapi).unwrap();
 
     let brightness = get_brightness(&uf);
 
@@ -88,7 +86,8 @@ fn set_brightness(uf: &HidDevice, val: u16) {
     // println!("res = {:?}", res);
 }
 
-fn find_oldest_ultrafine_5k(hidapi: &HidApi) -> Option<HidDevice> {
+#[allow(non_snake_case)]
+fn find_ultrafine_27MD5KL(hidapi: &HidApi) -> Option<HidDevice> {
     for device in hidapi.device_list() {
         if VENDOR_ID == device.vendor_id() {
             // println!();
@@ -124,8 +123,8 @@ fn main() {
 
     // println!();
 
-    let Some(uf) = find_oldest_ultrafine_5k(&hidapi) else {
-        println!("hasn't oldest ultrafine 5k display");
+    let Some(uf) = find_ultrafine_27MD5KL(&hidapi) else {
+        println!("hasn't ultrafine 27MD5KL display");
         return;
     };
 
@@ -198,10 +197,10 @@ fn main() {
             }
         }
 
+        debug_assert!(STEPS.contains(&brightness));
+
         set_brightness(&uf, brightness);
-
         progress.set_position(brightness_percent(brightness) as u64);
-
         progress.set_message(brightness.to_string());
 
         sleep(Duration::from_millis(50));
