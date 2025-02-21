@@ -189,7 +189,7 @@ fn main() {
                 }
             }
 
-            KeyCode::Char('q') => {
+            KeyCode::Char('q' | 'Q') => {
                 break;
             }
 
