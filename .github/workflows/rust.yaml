@@ -15,6 +15,6 @@ jobs:
             - name: Build
               run: cargo build --verbose --release
             - uses: actions/checkout@v4
-            - uses: ncipollo/release-action@v1
+            - uses: softprops/action-gh-release@v2
               with:
-                  artifacts: "./target/release/ufbr.exe"
+                  files: target/release/ufbr.exe
